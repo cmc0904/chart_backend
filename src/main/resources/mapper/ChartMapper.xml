@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.munchan.chart_backend.repository.ChartRepository">
+    <select id="getDeviceCPUChartData" resultType="ChartData">
+        SELECT
+             cpm.collectTime as "title"
+             , cpm.`cpu` as "value"
+        FROM
+            t_device de
+           , t_perf_cpumem cpm
+        WHERE
+            de.deviceId = cpm.deviceId
+            and de.deviceId = #{deviceId}
+            <if test="startDay != null and endDay != null">
+                AND cpm.collectTime BETWEEN #{startDay} AND #{endDay}
+            </if>
+        order by cpm.`cpu` desc
+        LIMIT 10
+    </select>
+
+    <select id="getModelDisorderChartData" resultType="ChartData">
+        SELECT
+        mo.title as "title"
+        , COUNT(*) as "value"
+        FROM
+            t_device de
+            , t_errors err
+            , t_model mo
+        WHERE
+            de.deviceId = err.deviceId
+            AND mo.modelId = de.modelId
+            AND de.deviceId = #{deviceId}
+            <if test="startDay != null and endDay != null">
+                AND err.occurDate BETWEEN #{startDay} AND #{endDay}
+            </if>
+        GROUP BY
+            mo.modelId
+            , mo.title
+        ORDER BY COUNT(*) desc
+        LIMIT 10
+
+    </select>
+
+    <select id="getDisorderTypeChartData" resultType="ChartData">
+        SELECT
+            err.title as "title"
+             , COUNT(*) as "value"
+        FROM
+            t_device de
+           , t_errors err
+        WHERE
+            de.deviceId = err.deviceId
+          AND de.deviceId = #{deviceId}
+        <if test="startDay != null and endDay != null">
+            AND err.occurDate BETWEEN #{startDay} AND #{endDay}
+        </if>
+        GROUP BY err.title
+        order by COUNT(*) desc
+        LIMIT 10;
+
+    </select>
+
+    <select id="getDailyDisorderChartData" resultType="ChartData">
+        SELECT
+            CONCAT(DATE_FORMAT(err.occurDate,'%d'),'일') as "title"
+             , COUNT(*) as "value"
+        FROM
+            t_device de
+           , t_errors err
+        WHERE
+            de.deviceId = err.deviceId
+          AND de.deviceId = #{deviceId}
+        <if test="startDay != null and endDay != null">
+            AND err.occurDate BETWEEN #{startDay} AND #{endDay}
+        </if>
+        GROUP BY
+            CONCAT(DATE_FORMAT(err.occurDate,'%d'),'일')
+        ORDER BY COUNT(*) desc
+    </select>
+
+
+    <select id="getDeviceIdByDeviceName" resultType="Integer">
+        SELECT deviceId from t_device where title = #{deviceName}
+    </select>
+
+
+
+</mapper>
