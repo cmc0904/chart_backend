@@ -6,41 +6,32 @@
 <mapper namespace="com.munchan.chart_backend.repository.ChartRepository">
     <select id="getDeviceCPUChartData" resultType="ChartData">
         SELECT
-             cpm.collectTime as "title"
-             , cpm.`cpu` as "value"
+            device.title AS "title"
+             , round(avg(tpc.cpu)) AS "value"
         FROM
-            t_device de
-           , t_perf_cpumem cpm
+            t_device device
+           , t_perf_cpumem tpc
         WHERE
-            de.deviceId = cpm.deviceId
-            and de.deviceId = #{deviceId}
-            <if test="startDay != null and endDay != null">
-                AND cpm.collectTime BETWEEN #{startDay} AND #{endDay}
-            </if>
-        order by cpm.`cpu` desc
-        LIMIT 10
+            device.deviceId = tpc.deviceId
+        GROUP BY device.title
+        ORDER BY avg(tpc.cpu) DESC
+        LIMIT 10;
     </select>
 
     <select id="getModelDisorderChartData" resultType="ChartData">
         SELECT
-        mo.title as "title"
-        , COUNT(*) as "value"
+            model.title AS "title"
+             , COUNT(*) AS "value"
         FROM
-            t_device de
-            , t_errors err
-            , t_model mo
+            t_device device
+           , t_model model
+           , t_errors terror
         WHERE
-            de.deviceId = err.deviceId
-            AND mo.modelId = de.modelId
-            AND de.deviceId = #{deviceId}
-            <if test="startDay != null and endDay != null">
-                AND err.occurDate BETWEEN #{startDay} AND #{endDay}
-            </if>
-        GROUP BY
-            mo.modelId
-            , mo.title
-        ORDER BY COUNT(*) desc
-        LIMIT 10
+            device.modelId = model.modelId
+          AND terror.deviceId = device.deviceId
+        GROUP BY model.title
+        ORDER BY COUNT(*) DESC
+            LIMIT 10;
 
     </select>
 
@@ -84,6 +75,22 @@
 
     <select id="getDeviceIdByDeviceName" resultType="Integer">
         SELECT deviceId from t_device where title = #{deviceName}
+    </select>
+
+    <select id="getAllDeviceName" resultType="String">
+        SELECT title from t_device order by title;
+    </select>
+
+    <select id="getMaxErrorDeviceName" resultType="ChartData">
+        SELECT
+            td.title as `title`
+             , COUNT(*) as `value`
+        FROM
+            t_device td
+           , t_errors tr
+        WHERE
+            td.deviceId = tr.deviceId
+        GROUP BY td.title ORDER BY COUNT(*) DESC LIMIT 1
     </select>
 
 

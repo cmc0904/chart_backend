@@ -3,31 +3,31 @@ package com.munchan.chart_backend.vo.chart;
 import java.util.List;
 
 public class AllCharts {
-    private final List<ChartData> deviceCPU;
-    private final List<ChartData> modelDisorder;
-    private final List<ChartData> disorderType;
-    private final List<ChartData> dailyDisorder;
+    private final Chart deviceCPU;
+    private final Chart modelDisorder;
+    private final Chart disorderType;
+    private final Chart dailyDisorder;
 
-    public AllCharts(List<ChartData> deviceCPU, List<ChartData> modelDisorder, List<ChartData> disorderType, List<ChartData> dailyDisorder) {
+    public AllCharts(Chart deviceCPU, Chart modelDisorder, Chart disorderType, Chart dailyDisorder) {
         this.deviceCPU = deviceCPU;
         this.modelDisorder = modelDisorder;
         this.disorderType = disorderType;
         this.dailyDisorder = dailyDisorder;
     }
 
-    public List<ChartData> getDeviceCPU() {
+    public Chart getDeviceCPU() {
         return deviceCPU;
     }
 
-    public List<ChartData> getModelDisorder() {
+    public Chart getModelDisorder() {
         return modelDisorder;
     }
 
-    public List<ChartData> getDisorderType() {
+    public Chart getDisorderType() {
         return disorderType;
     }
 
-    public List<ChartData> getDailyDisorder() {
+    public Chart getDailyDisorder() {
         return dailyDisorder;
     }
 }

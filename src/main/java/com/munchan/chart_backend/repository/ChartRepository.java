@@ -18,4 +18,10 @@ public interface ChartRepository {
     List<ChartData> getDailyDisorderChartData(Integer deviceId, String startDay, String endDay);
     // 장비 이름 -> 장비 ID
     Optional<Integer> getDeviceIdByDeviceName(String deviceName);
+
+    // 모든 장비 이름 불러오기
+    List<String> getAllDeviceName();
+
+    // 장비중 장애가 가장 많이 일어난 장비 불러오기
+    ChartData getMaxErrorDeviceName();
 }
