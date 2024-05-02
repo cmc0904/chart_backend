@@ -16,8 +16,8 @@ public class Chart {
             return;
         };
 
-        max = chartData.get(0).getValue();
-        min = chartData.get(chartData.size() -1).getValue();
+        max = chartData.get(0).getValue() + 2;
+        min = chartData.get(chartData.size() -1).getValue() - 2;
     }
 
     public List<ChartData> getChartData() {
@@ -30,5 +30,14 @@ public class Chart {
 
     public int getMax() {
         return max;
+    }
+
+    @Override
+    public String toString() {
+        return "Chart{" +
+                "chartData=" + chartData +
+                ", min=" + min +
+                ", max=" + max +
+                '}';
     }
 }

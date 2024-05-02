@@ -18,4 +18,12 @@ public class ChartData {
     public Integer getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "ChartData{" +
+                "title='" + title + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

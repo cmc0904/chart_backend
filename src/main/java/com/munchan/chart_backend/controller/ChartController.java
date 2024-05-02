@@ -2,7 +2,7 @@ package com.munchan.chart_backend.controller;
 
 import com.munchan.chart_backend.exception.NotExistDeviceException;
 import com.munchan.chart_backend.service.ChartService;
-import com.munchan.chart_backend.service.ChatServiceImpl;
+
 import com.munchan.chart_backend.vo.chart.AllCharts;
 import com.munchan.chart_backend.vo.chart.ChartData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,19 @@ public class ChartController {
 
     @GetMapping("/searchChart")
     public AllCharts getChartData(String deviceName, String startDate, String endDate) throws NotExistDeviceException {
-        return chartService.getCharts(deviceName, startDate, endDate);
+        System.out.println(startDate);
+        System.out.println(endDate);
+        return chartService.getSearchedCharts(deviceName, startDate, endDate);
+    }
+
+    @GetMapping("/getChartData")
+    public AllCharts getChartData() {
+        return chartService.getCharts();
     }
 
     @GetMapping("/getAllDeviceName")
-    public List<String> getAllDeviceName() {
-        return chartService.getAllDeviceName();
+    public List<String> getAllDeviceName(String deviceName) {
+        return chartService.getAllDeviceName(deviceName);
     }
 
     @GetMapping("/getMaxErrorDeviceName")

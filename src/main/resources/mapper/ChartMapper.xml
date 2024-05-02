@@ -13,6 +13,13 @@
            , t_perf_cpumem tpc
         WHERE
             device.deviceId = tpc.deviceId
+            <if test="deviceId != null">
+                AND device.deviceId = #{deviceId}
+            </if>
+
+            <if test="startDay != null and endDay != null">
+                AND tpc.collectTime BETWEEN #{startDay} AND #{endDay}
+            </if>
         GROUP BY device.title
         ORDER BY avg(tpc.cpu) DESC
         LIMIT 10;
@@ -29,6 +36,13 @@
         WHERE
             device.modelId = model.modelId
           AND terror.deviceId = device.deviceId
+            <if test="deviceId != null">
+                AND device.deviceId = #{deviceId}
+            </if>
+
+            <if test="startDay != null and endDay != null">
+                AND terror.occurDate BETWEEN #{startDay} AND #{endDay}
+            </if>
         GROUP BY model.title
         ORDER BY COUNT(*) DESC
             LIMIT 10;
@@ -44,10 +58,13 @@
            , t_errors err
         WHERE
             de.deviceId = err.deviceId
-          AND de.deviceId = #{deviceId}
-        <if test="startDay != null and endDay != null">
-            AND err.occurDate BETWEEN #{startDay} AND #{endDay}
-        </if>
+            <if test="deviceId != null">
+                AND de.deviceId = #{deviceId}
+            </if>
+
+            <if test="startDay != null and endDay != null">
+                AND err.occurDate BETWEEN #{startDay} AND #{endDay}
+            </if>
         GROUP BY err.title
         order by COUNT(*) desc
         LIMIT 10;
@@ -56,19 +73,22 @@
 
     <select id="getDailyDisorderChartData" resultType="ChartData">
         SELECT
-            CONCAT(DATE_FORMAT(err.occurDate,'%d'),'일') as "title"
+            DATE_FORMAT(err.occurDate,'%Y년%m월%d일') AS "title"
              , COUNT(*) as "value"
         FROM
             t_device de
            , t_errors err
         WHERE
             de.deviceId = err.deviceId
-          AND de.deviceId = #{deviceId}
-        <if test="startDay != null and endDay != null">
-            AND err.occurDate BETWEEN #{startDay} AND #{endDay}
-        </if>
+            <if test="deviceId != null">
+                AND de.deviceId = #{deviceId}
+            </if>
+
+            <if test="startDay != null and endDay != null">
+                AND err.occurDate BETWEEN #{startDay} AND #{endDay}
+            </if>
         GROUP BY
-            CONCAT(DATE_FORMAT(err.occurDate,'%d'),'일')
+            DATE_FORMAT(err.occurDate,'%Y년%m월%d일')
         ORDER BY COUNT(*) desc
     </select>
 
@@ -78,7 +98,11 @@
     </select>
 
     <select id="getAllDeviceName" resultType="String">
-        SELECT title from t_device order by title;
+        SELECT title from t_device
+        <if test="deviceName != null || ''.equals(deviceName)">
+            where title like concat(#{deviceName}, "%")
+        </if>
+        order by title
     </select>
 
     <select id="getMaxErrorDeviceName" resultType="ChartData">
@@ -92,6 +116,21 @@
             td.deviceId = tr.deviceId
         GROUP BY td.title ORDER BY COUNT(*) DESC LIMIT 1
     </select>
+
+    <select id="getDeviceInformation" resultType="DeviceData">
+        SELECT
+            deviceId
+             , (SELECT title FROM t_device WHERE deviceId = #{deviceId}) AS "deviceName"
+             , round(avg(CPU)) "averageMemoryUsage"
+             , round(avg(mem)) "averageCPUUsage"
+             , round(avg(temperature)) "averageTemperature"
+        FROM t_perf_cpumem cp
+        WHERE cp.deviceId = #{deviceId};
+    </select>
+
+
+
+
 
 
 
