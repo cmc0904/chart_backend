@@ -23,6 +23,13 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 }
 
+task copyDependencies(type: Copy) {
+	from configurations.runtimeClasspath
+	into "${buildDir}/libs/dependencies"
+}
+// assemble 태스크 이전에 copyDependencies 태스크 실행
+assemble.dependsOn(copyDependencies)
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

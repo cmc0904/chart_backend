@@ -24,14 +24,14 @@ public class ChartController {
 
     @GetMapping("/searchChart")
     public AllCharts getChartData(String deviceName, String startDate, String endDate) throws NotExistDeviceException {
-        System.out.println(startDate);
-        System.out.println(endDate);
-        return chartService.getSearchedCharts(deviceName, startDate, endDate);
+        System.out.printf("시작일 : %s | 끝나는 일 : %s%n", startDate, endDate);
+        return chartService.getChart(deviceName, startDate, endDate);
     }
 
     @GetMapping("/getChartData")
-    public AllCharts getChartData() {
-        return chartService.getCharts();
+    public AllCharts getChartData(String startDate, String endDate) {
+        System.out.printf("시작일 : %s | 끝나는 일 : %s%n", startDate, endDate);
+        return chartService.getChart(startDate, endDate);
     }
 
     @GetMapping("/getAllDeviceName")

@@ -20,21 +20,18 @@ public class ChatServiceImpl implements ChartService {
     }
 
     @Override
-    public AllCharts getCharts() {
+    public AllCharts getChart(String startDate, String endDate) {
         return new AllCharts(
-                new Chart(chartRepository.getDeviceCPUChartData(null, null, null))
-                , new Chart(chartRepository.getModelDisorderChartData(null, null, null))
-                , new Chart(chartRepository.getDisorderTypeChartData(null, null, null))
-                , new Chart(chartRepository.getDailyDisorderChartData(null, null, null))
+                new Chart(chartRepository.getDeviceCPUChartData(null, startDate, endDate))
+                , new Chart(chartRepository.getModelDisorderChartData(null, startDate, endDate))
+                , new Chart(chartRepository.getDisorderTypeChartData(null, startDate, endDate))
+                , new Chart(chartRepository.getDailyDisorderChartData(null, startDate, endDate))
         );
     }
 
     @Override
-    public AllCharts getSearchedCharts(String deviceName, String startDate, String endDate) throws NotExistDeviceException {
+    public AllCharts getChart(String deviceName, String startDate, String endDate) throws NotExistDeviceException {
         Integer deviceNameToDeviceId = getDeviceIdByDeviceName(deviceName);
-
-        Long startDateTimeStamp = startDate != null ? Timestamp.valueOf(startDate).getTime() : null;
-        Long endDateTimeStamp = endDate != null ? Timestamp.valueOf(endDate).getTime() : null;
 
         return new AllCharts(
             chartRepository.getDeviceInformation(deviceNameToDeviceId)

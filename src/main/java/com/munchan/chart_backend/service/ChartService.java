@@ -9,10 +9,10 @@ import java.util.List;
 public interface ChartService {
 
     // 차트 정보 불러오기
-    AllCharts getCharts();
+    AllCharts getChart(String startDate, String endDate);
 
     // 차트 정보 불러오기
-    AllCharts getSearchedCharts(String deviceName, String startDate, String endDate) throws NotExistDeviceException;
+    AllCharts getChart(String deviceName, String startDate, String endDate) throws NotExistDeviceException;
 
     // 디바이스 이름 -> 디바이스 아이디
     Integer getDeviceIdByDeviceName(String deviceName) throws NotExistDeviceException;
